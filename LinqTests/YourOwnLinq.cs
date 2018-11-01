@@ -1,33 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 
-internal static class YourOwnLinq
+namespace LinqSample.YourOwnLinq
 {
-    public static IEnumerable<TSource> Where<TSource>(this IEnumerable<TSource> source,
-        Predicate<TSource> predicate)
+    internal static class YourOwnLinq
     {
-        var index = 0;
-
-        foreach (var item in source)
+        public static IEnumerable<TSource> YourWhere<TSource>(this IEnumerable<TSource> source,
+            Func<TSource, int, bool> predicate)
         {
-            if (predicate(item))
-            {
-                yield return item;
-            }
-            index++;
-        }
-    }
+            var index = 0;
 
-    public static IEnumerable<TSource> Where<TSource>(this IEnumerable<TSource> source,
-        Func<TSource, int, bool> predicate)
-    {
-        var index = 0;
-
-        foreach (var item in source)
-        {
-            if (predicate(item, index))
+            foreach (var item in source)
             {
-                yield return item;
+                if (predicate(item, index))
+                {
+                    yield return item;
+                }
             }
         }
     }

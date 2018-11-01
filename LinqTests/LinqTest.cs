@@ -1,7 +1,6 @@
 ﻿using ExpectedObjects;
 using JoeyIsFat;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -14,7 +13,7 @@ namespace LinqTests
         public void find_products_that_price_between_200_and_500()
         {
             var products = RepositoryFactory.GetProducts().ToList();
-            var actual = products.YourWhere(product => product.IsTopSaleProducts());
+            var actual = products.Where(product => product.IsTopSaleProducts());
 
             var expected = new List<Product>()
             {
@@ -26,11 +25,11 @@ namespace LinqTests
             expected.ToExpectedObject().ShouldEqual(actual.ToList());
         }
 
+        [Ignore]
         [TestMethod]
-        public void find_products_that_price_between_200_and_500_by_where()
+        public void find_products_that_price_between_200_and_500_and_cost_more_than_50()
         {
             var products = RepositoryFactory.GetProducts();
-            var actual = products.Where(p => p.Price > 200 && p.Price < 500 && p.Cost > 30);
 
             var expected = new List<Product>()
             {
@@ -39,14 +38,14 @@ namespace LinqTests
                 new Product {Id = 4, Cost = 41, Price = 410, Supplier = "Odd-e"},
             };
 
-            expected.ToExpectedObject().ShouldEqual(actual.ToList());
+            //expected.ToExpectedObject().ShouldEqual(actual.ToList());
         }
 
+        [Ignore]
         [TestMethod]
         public void find_employee_that_age_more_30_item_index_more_2()
         {
             var employees = RepositoryFactory.GetEmployees();
-            var actual = WithoutLinq.Find(employees, (e, idx) => e.Age > 30 && idx >= 2);
 
             var expected = new List<Employee>()
             {
@@ -65,48 +64,23 @@ namespace LinqTests
             //    Console.WriteLine(item.Price);
             //}
 
-            expected.ToExpectedObject().ShouldEqual(actual.ToList());
+            //expected.ToExpectedObject().ShouldEqual(actual.ToList());
         }
 
-        [TestMethod]
-        public void YourWhere()
-        {
-            var employees = RepositoryFactory.GetEmployees();
-
-            var actual = employees
-                .YourWhere(e => e.Age < 25)
-                .YourSelect(e => $"{e.Role}:{e.Name}");
-
-            foreach (var titleName in actual)
-            {
-                Console.WriteLine(titleName);
-            }
-
-            var expected = new List<string>()
-            {
-                "OP:Andy",
-                "Engineer:Frank",
-            };
-
-            expected.ToExpectedObject().ShouldEqual(actual.ToList());
-        }
-
+        [Ignore]
         [TestMethod]
         public void YourWhere_YourSelect()
         {
             var employees = RepositoryFactory.GetEmployees();
-            var sqlActual = from e in employees
-                            where e.Age < 25
-                            select $"{e.Role}:{e.Name}";
 
-            var actual = employees
-                .YourWhere(e => e.Age < 25)
-                .YourSelect(e => $"{e.Role}:{e.Name}");
+            //var actual = employees
+            //    .YourWhere(e => e.Age < 25)
+            //    .YourSelect(e => $"{e.Role}:{e.Name}");
 
-            foreach (var titleName in actual)
-            {
-                Console.WriteLine(titleName);
-            }
+            //foreach (var titleName in actual)
+            //{
+            //    Console.WriteLine(titleName);
+            //}
 
             var expected = new List<string>()
             {
@@ -114,55 +88,55 @@ namespace LinqTests
                 "Engineer:Frank",
             };
 
-            expected.ToExpectedObject().ShouldEqual(actual.ToList());
+            //expected.ToExpectedObject().ShouldEqual(actual.ToList());
         }
 
+        [Ignore]
         [TestMethod]
         public void Take()
         {
             var employees = RepositoryFactory.GetEmployees();
-            var act = WithoutLinq.YourTake(employees, 2);
             var expected = new List<Employee>
             {
                 new Employee {Name = "Joe", Role = RoleType.Engineer, MonthSalary = 100, Age = 44, WorkingYear = 2.6},
                 new Employee {Name = "Tom", Role = RoleType.Engineer, MonthSalary = 140, Age = 33, WorkingYear = 2.6},
             };
 
-            expected.ToExpectedObject().ShouldEqual(act.ToList());
+            //expected.ToExpectedObject().ShouldEqual(act.ToList());
         }
 
+        [Ignore]
         [TestMethod]
         public void Skip()
         {
             var employees = RepositoryFactory.GetEmployees();
-            var act = WithoutLinq.YourSkip(employees, 6);
             var expected = new List<Employee>
             {
                 new Employee {Name = "Frank", Role = RoleType.Engineer, MonthSalary = 120, Age = 16, WorkingYear = 2.6},
                 new Employee {Name = "Joey", Role = RoleType.Engineer, MonthSalary = 250, Age = 40, WorkingYear = 2.6},
             };
 
-            expected.ToExpectedObject().ShouldEqual(act.ToList());
+            //expected.ToExpectedObject().ShouldEqual(act.ToList());
         }
 
+        [Ignore]
         [TestMethod]
         public void TakeWhile()
         {
             var employees = RepositoryFactory.GetEmployees();
-            var act = WithoutLinq.TakeWhile(employees, 2, x => x.MonthSalary > 150);
             var expected = new List<Employee>
             {
                 new Employee {Name = "Kevin", Role = RoleType.Manager, MonthSalary = 380, Age = 55, WorkingYear = 2.6},
                 new Employee {Name = "Bas", Role = RoleType.Engineer, MonthSalary = 280, Age = 36, WorkingYear = 2.6},
             };
-            expected.ToExpectedObject().ShouldEqual(act.ToList());
+            //expected.ToExpectedObject().ShouldEqual(act.ToList());
         }
 
+        [Ignore]
         [TestMethod]
         public void SkipWhile()
         {
             var employees = RepositoryFactory.GetEmployees();
-            var act = WithoutLinq.SkipWhile(employees, 3, x => x.MonthSalary < 150);
             var expected = new List<Employee>
             {
                 new Employee {Name = "Kevin", Role = RoleType.Manager, MonthSalary = 380, Age = 55, WorkingYear = 2.6},
@@ -171,7 +145,7 @@ namespace LinqTests
                 new Employee {Name = "Frank", Role = RoleType.Engineer, MonthSalary = 120, Age = 16, WorkingYear = 2.6},
                 new Employee {Name = "Joey", Role = RoleType.Engineer, MonthSalary = 250, Age = 40, WorkingYear = 2.6},
             };
-            expected.ToExpectedObject().ShouldEqual(act.ToList());
+            //expected.ToExpectedObject().ShouldEqual(act.ToList());
         }
     }
 }

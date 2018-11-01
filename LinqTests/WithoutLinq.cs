@@ -6,26 +6,6 @@ namespace JoeyIsFat
 {
     internal static class WithoutLinq
     {
-        public static IEnumerable<TSource> YourWhere<TSource>(this IEnumerable<TSource> source,
-            Func<TSource, bool> predicate)
-        {
-            foreach (var item in source)
-            {
-                if (predicate(item))
-                {
-                    yield return item;
-                }
-            }
-        }
-
-        public static IEnumerable<string> ToHttps(IEnumerable<string> urls)
-        {
-            foreach (var url in urls)
-            {
-                yield return url.Replace(@"http://", @"https://");
-            }
-        }
-
         public static IEnumerable<TResult> YourSelect<TSource, TResult>(this IEnumerable<TSource> source,
             Func<TSource, TResult> selector)
         {
@@ -126,7 +106,7 @@ namespace JoeyIsFat
             }
         }
 
-        public static IEnumerable<T> Find<T>(IEnumerable<T> employees, Func<T, int, bool> predicate)
+        public static IEnumerable<T> Find<T>(this IEnumerable<T> employees, Func<T, int, bool> predicate)
         {
             var index = 0;
             foreach (var employee in employees)
@@ -136,6 +116,17 @@ namespace JoeyIsFat
                     yield return employee;
                 }
                 index++;
+            }
+        }
+
+        public static IEnumerable<T> Find<T>(IEnumerable<T> sources, Func<T, bool> predicate)
+        {
+            foreach (var source in sources)
+            {
+                if (predicate(source))
+                {
+                    yield return source;
+                }
             }
         }
     }
