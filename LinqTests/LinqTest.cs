@@ -2,6 +2,8 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
+using LinqSample.WithoutLinq;
 
 namespace LinqTests
 {
@@ -12,7 +14,16 @@ namespace LinqTests
         public void find_products_that_price_between_200_and_500()
         {
             var products = RepositoryFactory.GetProducts().ToList();
-            var actual = products.Where(product => product.IsTopSaleProducts());
+
+            var actual1 = products.Where(product => product.IsTopSaleProducts());
+            var actual = new List<Product>();
+            foreach (var p in products)
+            {
+                if (p.IsTopSaleProducts())
+                {
+                    actual.Add(p);
+                }
+            }
 
             var expected = new List<Product>()
             {
@@ -24,27 +35,40 @@ namespace LinqTests
             expected.ToExpectedObject().ShouldEqual(actual.ToList());
         }
 
-        [Ignore]
+
         [TestMethod]
-        public void find_products_that_price_between_200_and_500_and_cost_more_than_50()
+        public void find_products_that_price_between_200_and_500_and_cost_more_than_20()
         {
             var products = RepositoryFactory.GetProducts();
 
+            //var actual = new List<Product>();
+            var actual = WithoutLinq.Find(products, p => p.Price > 200 && p.Price < 500 && p.Cost > 20);
+
+            //foreach (var p in products)
+            //{
+            //    if (p.IsTopSaleProducts() && p.Cost >20)
+            //    {
+            //        actual.Add(p);
+            //    }
+            //}
             var expected = new List<Product>()
             {
-                //new Product {Id = 2, Cost = 21, Price = 210, Supplier = "Yahoo"},
+                new Product {Id = 2, Cost = 21, Price = 210, Supplier = "Yahoo"},
                 new Product {Id = 3, Cost = 31, Price = 310, Supplier = "Odd-e"},
                 new Product {Id = 4, Cost = 41, Price = 410, Supplier = "Odd-e"},
             };
 
-            //expected.ToExpectedObject().ShouldEqual(actual.ToList());
+            expected.ToExpectedObject().ShouldEqual(actual.ToList());
         }
 
-        [Ignore]
         [TestMethod]
         public void find_employee_that_age_more_30_item_index_more_2()
         {
             var employees = RepositoryFactory.GetEmployees();
+
+            //var actual = WithoutLinq.more30(WithoutLinq.skip(employees, 2), p => p.Age > 30);
+            //var actual = WithoutLinq.Find<Employee>(employees, (p, Index) => p.Age > 30 && Index >= 2);
+            var actual = employees.Find<Employee>((p, Index) => p.Age > 30 && Index >= 2);
 
             var expected = new List<Employee>()
             {
@@ -63,18 +87,16 @@ namespace LinqTests
             //    Console.WriteLine(item.Price);
             //}
 
-            //expected.ToExpectedObject().ShouldEqual(actual.ToList());
+            expected.ToExpectedObject().ShouldEqual(actual.ToList());
         }
 
-        [Ignore]
         [TestMethod]
         public void YourWhere_YourSelect()
         {
             var employees = RepositoryFactory.GetEmployees();
 
-            //var actual = employees
-            //    .YourWhere(e => e.Age < 25)
-            //    .YourSelect(e => $"{e.Role}:{e.Name}");
+
+            var actual = employees.YourWhere(e => e.Age < 25).YourSelect(e => $"{e.Role}:{e.Name}");
 
             //foreach (var titleName in actual)
             //{
@@ -87,7 +109,7 @@ namespace LinqTests
                 "Engineer:Frank",
             };
 
-            //expected.ToExpectedObject().ShouldEqual(actual.ToList());
+            expected.ToExpectedObject().ShouldEqual(actual.ToList());
         }
 
         [Ignore]
