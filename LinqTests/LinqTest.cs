@@ -141,24 +141,24 @@ namespace LinqTests
             expected.ToExpectedObject().ShouldEqual(act.ToList());
         }
 
-        [Ignore]
         [TestMethod]
         public void TakeWhile()
         {
             var employees = RepositoryFactory.GetEmployees();
+            var act = WithoutLinq.YTakeWhile(employees, 2, p => p.MonthSalary > 150);
             var expected = new List<Employee>
             {
                 new Employee {Name = "Kevin", Role = RoleType.Manager, MonthSalary = 380, Age = 55, WorkingYear = 2.6},
                 new Employee {Name = "Bas", Role = RoleType.Engineer, MonthSalary = 280, Age = 36, WorkingYear = 2.6},
             };
-            //expected.ToExpectedObject().ShouldEqual(act.ToList());
+            expected.ToExpectedObject().ShouldEqual(act.ToList());
         }
 
-        [Ignore]
         [TestMethod]
         public void SkipWhile()
         {
             var employees = RepositoryFactory.GetEmployees();
+            var act = employees.Whileskip(3,p=>p.MonthSalary <150);
             var expected = new List<Employee>
             {
                 new Employee {Name = "Kevin", Role = RoleType.Manager, MonthSalary = 380, Age = 55, WorkingYear = 2.6},
@@ -167,7 +167,7 @@ namespace LinqTests
                 new Employee {Name = "Frank", Role = RoleType.Engineer, MonthSalary = 120, Age = 16, WorkingYear = 2.6},
                 new Employee {Name = "Joey", Role = RoleType.Engineer, MonthSalary = 250, Age = 40, WorkingYear = 2.6},
             };
-            //expected.ToExpectedObject().ShouldEqual(act.ToList());
+            expected.ToExpectedObject().ShouldEqual(act.ToList());
         }
     }
 }

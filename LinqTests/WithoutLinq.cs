@@ -40,6 +40,23 @@ namespace LinqSample.WithoutLinq
                 j++;
             }
         }
+        public static IEnumerable<T> Whileskip<T>(this IEnumerable<T> sources, int i,Func<T, bool> p)
+        {
+            var index = 0;
+            foreach (var s in sources)
+            {
+               
+                 if (p(s) && index < i)
+                {
+                    index++;
+                }
+                else
+                {
+                    yield return s;
+                }
+            }
+
+        }
 
         internal static IEnumerable<T> Find<T>(this IEnumerable<T> employees, Func<T, int, bool> p)
         {
@@ -86,6 +103,25 @@ namespace LinqSample.WithoutLinq
                     yield return source;
                 }
                 index++;
+            }
+        }
+
+        public static IEnumerable<T> YTakeWhile<T>(IEnumerable<T> sources, int i, Func<T, bool> P)
+        {
+            var index = 0;
+            foreach (var source in sources)
+            {
+                if (index >= i)
+                {
+                    yield break;
+                }
+
+                if (P(source))
+                {
+                   
+                    yield return source;
+                    index++;
+                }
             }
         }
     }
