@@ -112,18 +112,18 @@ namespace LinqTests
             expected.ToExpectedObject().ShouldEqual(actual.ToList());
         }
 
-        [Ignore]
         [TestMethod]
         public void Take()
         {
             var employees = RepositoryFactory.GetEmployees();
+           var act= employees.Ytake( 2);
             var expected = new List<Employee>
             {
                 new Employee {Name = "Joe", Role = RoleType.Engineer, MonthSalary = 100, Age = 44, WorkingYear = 2.6},
                 new Employee {Name = "Tom", Role = RoleType.Engineer, MonthSalary = 140, Age = 33, WorkingYear = 2.6},
             };
 
-            //expected.ToExpectedObject().ShouldEqual(act.ToList());
+            expected.ToExpectedObject().ShouldEqual(act.ToList());
         }
 
         [Ignore]

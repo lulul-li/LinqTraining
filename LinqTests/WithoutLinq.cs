@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using LinqTests;
 
 namespace LinqSample.WithoutLinq
@@ -13,7 +12,7 @@ namespace LinqSample.WithoutLinq
             {
                 if (p(product))
                 {
-                  yield return  product;
+                    yield return product;
                 }
             }
         }
@@ -42,12 +41,12 @@ namespace LinqSample.WithoutLinq
             }
         }
 
-        internal static IEnumerable<T> Find<T>( this IEnumerable<T> employees, Func<T, int, bool> p)
+        internal static IEnumerable<T> Find<T>(this IEnumerable<T> employees, Func<T, int, bool> p)
         {
-           var index = 0;
+            var index = 0;
             foreach (var employee in employees)
             {
-                if (p(employee,index))
+                if (p(employee, index))
                 {
                     yield return employee;
                 }
@@ -68,14 +67,26 @@ namespace LinqSample.WithoutLinq
                 index++;
             }
         }
-        public static IEnumerable<string> YourSelect<T>(this IEnumerable<T> sources, Func<T, string> func)
+
+        public static IEnumerable<TT> YourSelect<T, TT>(this IEnumerable<T> sources, Func<T, TT> func)
         {
             foreach (var s in sources)
             {
                 yield return func(s);
             }
+        }
 
-           
+        public static IEnumerable<T> Ytake<T>(this IEnumerable<T> sources, int i)
+        {
+            var index = 0;
+            foreach (var source in sources)
+            {
+                if (index < i)
+                {
+                    yield return source;
+                }
+                index++;
+            }
         }
     }
 }
