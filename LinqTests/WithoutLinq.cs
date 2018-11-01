@@ -28,14 +28,14 @@ namespace LinqSample.WithoutLinq
             }
         }
 
-        public static IEnumerable<Employee> skip(IEnumerable<Employee> employees, int i)
+        public static IEnumerable<T> skip<T>(this IEnumerable<T> sources, int i)
         {
             var j = 0;
-            foreach (var employee in employees)
+            foreach (var s in sources)
             {
-                if (j > 2)
+                if (j >= i)
                 {
-                    yield return employee;
+                    yield return s;
                 }
                 j++;
             }
