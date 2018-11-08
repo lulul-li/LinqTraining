@@ -145,6 +145,7 @@ namespace LinqTests
             };
             expected.ToExpectedObject().ShouldEqual(act.ToList());
         }
+
         [TestMethod]
         public void groupSalary()
         {
