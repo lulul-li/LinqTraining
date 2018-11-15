@@ -3,7 +3,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Security.Cryptography.X509Certificates;
 using LinqSample.WithoutLinq;
+using LinqSample.YourOwnLinq;
 
 namespace LinqTests
 {
@@ -116,7 +118,7 @@ namespace LinqTests
         public void Take()
         {
             var employees = RepositoryFactory.GetEmployees();
-           var act= employees.Ytake( 2);
+            var act = employees.Ytake(2);
             var expected = new List<Employee>
             {
                 new Employee {Name = "Joe", Role = RoleType.Engineer, MonthSalary = 100, Age = 44, WorkingYear = 2.6},
@@ -126,7 +128,7 @@ namespace LinqTests
             expected.ToExpectedObject().ShouldEqual(act.ToList());
         }
 
-        
+
         [TestMethod]
         public void Skip()
         {
@@ -153,12 +155,12 @@ namespace LinqTests
             };
             expected.ToExpectedObject().ShouldEqual(act.ToList());
         }
-
+        [Ignore]
         [TestMethod]
         public void SkipWhile()
         {
             var employees = RepositoryFactory.GetEmployees();
-            var act = employees.Whileskip(3,p=>p.MonthSalary <150);
+            var act = employees.Whileskip(3, p => p.MonthSalary < 150);
             var expected = new List<Employee>
             {
                 new Employee {Name = "Kevin", Role = RoleType.Manager, MonthSalary = 380, Age = 55, WorkingYear = 2.6},
@@ -169,5 +171,98 @@ namespace LinqTests
             };
             expected.ToExpectedObject().ShouldEqual(act.ToList());
         }
+
+        [TestMethod]
+        public void All()
+        {
+            var products = RepositoryFactory.GetProducts().ToList();
+            var resp = products.MyAll(x => x.Cost < 41);
+            Assert.AreEqual(resp, false);
+        }
+
+        [TestMethod]
+        public void Any()
+        {
+            var employees = RepositoryFactory.GetEmployees().ToList();
+            var result = employees.MyAny(x => x.Name == "Annie");
+            Assert.AreEqual(false, result);
+        }
+
+        [TestMethod]
+        public void FirstorDefault()
+        {
+            //default();
+        }
+
+        [TestMethod]
+        public void Single()
+        {
+            var employees = RepositoryFactory.GetEmployees();
+            var result = YourOwnLinq.MySingle(employees, x => x.Role == RoleType.Manager);
+            Assert.AreEqual(new Employee {Name = "Kevin", Role = RoleType.Manager, MonthSalary = 380, Age = 55, WorkingYear = 2.6},result);
+        }
+
+        [TestMethod]
+        public void Distinct()
+        {
+            var employees = RepositoryFactory.GetEmployees();
+            var result = YourOwnLinq.MyDistinct(employees);
+            var expected = employees.Distinct();
+            expected.ToExpectedObject().ShouldEqual(result);
+        }
+           
+        [TestMethod]
+        public void groupSalary()
+        {
+            var employees = RepositoryFactory.GetEmployees();
+            var actual = WithoutLinq.YourGroup(employees, 3, e => e.MonthSalary);
+ 
+            var expected = new List<int>()
+            {
+                620,
+                540,
+                370
+            };
+ 
+            expected.ToExpectedObject().ShouldEqual(actual.ToList());
+        }
+        [TestMethod]
+        public void First()
+        {
+            var employees = RepositoryFactory.GetEmployees();
+            var actual = WithoutLinq.YourFirst(employees, e => e.Age > 30);
+ 
+            var expected = new Employee
+            {
+                Name = "Joe",
+                Role = RoleType.Engineer,
+                MonthSalary = 100,
+                Age = 44,
+                WorkingYear = 2.6
+            };
+ 
+ 
+            expected.ToExpectedObject().ShouldEqual(actual);
+        }
+ 
+        [TestMethod]
+        public void Last()
+        {
+            var employees = RepositoryFactory.GetEmployees();
+            var actual = WithoutLinq.YourLast(employees, e => e.Age > 30);
+ 
+            var expected = new Employee
+            {
+                Name = "Joey",
+                Role = RoleType.Engineer,
+                MonthSalary = 250,
+                Age = 40,
+                WorkingYear = 2.6
+            };
+ 
+ 
+            expected.ToExpectedObject().ShouldEqual(actual);
+        }
     }
 }
+    

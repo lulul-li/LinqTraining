@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using Castle.Core.Internal;
 using LinqTests;
 
 namespace LinqSample.WithoutLinq
@@ -40,19 +42,19 @@ namespace LinqSample.WithoutLinq
                 j++;
             }
         }
-        public static IEnumerable<T> Whileskip<T>(this IEnumerable<T> sources, int i,Func<T, bool> p)
+        public static IEnumerable<T> Whileskip<T>(this IEnumerable<T> sources, int i, Func<T, bool> p)
         {
+            var enumerator = sources.GetEnumerator();
             var index = 0;
-            foreach (var s in sources)
+            while (enumerator.MoveNext())
             {
-               
-                 if (p(s) && index < i)
+                if (index < i && p(enumerator.Current))
                 {
                     index++;
                 }
                 else
                 {
-                    yield return s;
+                    yield return enumerator.Current;
                 }
             }
 
@@ -118,11 +120,61 @@ namespace LinqSample.WithoutLinq
 
                 if (P(source))
                 {
-                   
+
                     yield return source;
                     index++;
                 }
             }
+        }
+
+        public static IEnumerable<int> YourGroup<T>(IEnumerable<T> employees, int i, Func<T, int> func)
+        {
+            var index = 0;
+            var num = 0;
+            var ints = new List<int>();
+            
+            foreach (var s in employees)
+            {
+                num += func(s);
+                index++;
+                if (index % i != 0)
+                {
+                    continue;
+                }
+
+                ints.Add(num);
+                index = 0;
+                num = 0;
+
+            }
+            ints.Add(num);
+             return ints;
+        }
+
+        internal static T YourFirst<T>(IEnumerable<T> employees, Func<T, bool> p)
+        {
+            var enumerator = employees.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                if (p(enumerator.Current))
+                {
+                     return enumerator.Current;
+                }
+            }
+            return default(T);
+        }
+        
+        internal static IEnumerable<T> YourLast<T>(IEnumerable<T> employees, Func<T, bool> p)
+        {
+            var yourWhere = employees.YourWhere(p);
+            var enumerator = yourWhere.GetEnumerator();
+            var index = 0;
+            while (enumerator.MoveNext())
+            {
+                index++;
+            }
+
+            return Whileskip(yourWhere, index - 1, p);
         }
     }
 }
