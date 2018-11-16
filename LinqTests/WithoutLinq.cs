@@ -164,17 +164,20 @@ namespace LinqSample.WithoutLinq
             return default(T);
         }
         
-        internal static IEnumerable<T> YourLast<T>(IEnumerable<T> employees, Func<T, bool> p)
+        internal static T YourLast<T>(IEnumerable<T> employees, Func<T, bool> p)
         {
             var yourWhere = employees.YourWhere(p);
             var enumerator = yourWhere.GetEnumerator();
-            var index = 0;
+            var result = enumerator.Current;
             while (enumerator.MoveNext())
             {
-                index++;
+                if (p(enumerator.Current))
+                {
+                    result = enumerator.Current;
+                }
             }
 
-            return Whileskip(yourWhere, index - 1, p);
+            return result;
         }
     }
 }
