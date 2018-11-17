@@ -1,7 +1,10 @@
-﻿using ExpectedObjects;
+﻿using System;
+using ExpectedObjects;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.Linq;
+using LinqSample.WithoutLinq;
+using LinqSample.YourOwnLinq;
 
 namespace LinqTests
 {
@@ -9,19 +12,13 @@ namespace LinqTests
     public class LinqTest
     {
         [TestMethod]
-        public void find_products_that_price_between_200_and_500()
+        public void is_all_products_Cost_less_than_41_should_return_false()
         {
             var products = RepositoryFactory.GetProducts().ToList();
-            var actual = products.Where(product => product.IsTopSaleProducts());
 
-            var expected = new List<Product>()
-            {
-                new Product {Id = 2, Cost = 21, Price = 210, Supplier = "Yahoo"},
-                new Product {Id = 3, Cost = 31, Price = 310, Supplier = "Odd-e"},
-                new Product {Id = 4, Cost = 41, Price = 410, Supplier = "Odd-e"},
-            };
+            var actual = products.YourAll(product => product.Cost < 41);
 
-            expected.ToExpectedObject().ShouldEqual(actual.ToList());
+            Assert.IsFalse(actual);
         }
 
         [Ignore]
@@ -145,6 +142,48 @@ namespace LinqTests
                 new Employee {Name = "Joey", Role = RoleType.Engineer, MonthSalary = 250, Age = 40, WorkingYear = 2.6},
             };
             //expected.ToExpectedObject().ShouldEqual(act.ToList());
+        }
+
+        [TestMethod]
+        public void Any_False()
+        {
+            var employees = RepositoryFactory.GetEmployees();
+            var actual = employees.YourAny(p => p.Name == "Annie");
+            Assert.IsFalse(actual);
+        }
+
+        [TestMethod]
+        public void Any_True()
+        {
+            var employees = RepositoryFactory.GetEmployees();
+            var actual = employees.YourAny(p => p.Name == "Joey");
+            Assert.IsTrue(actual);
+        }
+
+        [TestMethod]
+        public void FirstOrDefault()
+        {
+            var employees = RepositoryFactory.GetEmployees();
+            var result = employees.MyFirstOrDefault(x => x.Age < 12);
+            Assert.AreEqual(default(Employee), result);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void Single()
+        {
+            var employees = RepositoryFactory.GetEmployees();
+            var result = YourOwnLinq.YourSingle(employees,x => x.Role == RoleType.OP);
+        }
+
+        [TestMethod]
+        public void Distinct()
+        {
+            var employees = RepositoryFactory.GetEmployees();
+            var act = YourOwnLinq.YourDistinct(employees);
+            
+            var exp = employees.Distinct();
+            exp.ToExpectedObject().ShouldEqual(act.ToList());
         }
     }
 }
