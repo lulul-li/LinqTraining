@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using ExpectedObjects;
 using LinqTests;
 
 namespace LinqSample.YourOwnLinq
@@ -43,11 +45,10 @@ namespace LinqSample.YourOwnLinq
             return current;
         }
 
-        public static IEnumerable<T> YourDistinct<T>(IEnumerable<T> sources)
+        public static IEnumerable<T> YourDistinct<T>(IEnumerable<T> sources, IEqualityComparer<T> myCompare)
         {
             var enumerator = sources.GetEnumerator();
-
-            var hashSet = new HashSet<T>();
+            var hashSet = new HashSet<T>(myCompare);
             while (enumerator.MoveNext())
             {
                 if (hashSet.Add(enumerator.Current))
@@ -56,6 +57,58 @@ namespace LinqSample.YourOwnLinq
                 }
             }
 
+
+        }
+
+        public static bool YourContains<T>(this IEnumerable<T> employees, IEnumerable<T> validateList, IEqualityComparer<T> myComparer)
+        {
+            var enumerator = employees.GetEnumerator();
+            var validateEnumerator = validateList.GetEnumerator();
+            var hashSet = new HashSet<T>(myComparer);
+            while (enumerator.MoveNext())
+            {
+                hashSet.Add(enumerator.Current);
+            }
+
+            while (validateEnumerator.MoveNext())
+            {
+                if (!hashSet.Contains(validateEnumerator.Current))
+                {
+                    return false;
+                }
+            }
+            return true;
+
+            //var enumerator = employees.GetEnumerator();
+            //var validateEnumerator = validateList.GetEnumerator();
+
+            //while (enumerator.MoveNext())
+            //{
+            //    validateEnumerator.Reset();
+            //    while (validateEnumerator.MoveNext())
+            //    {
+            //        if (enumerator.Current.Equals(validateEnumerator.Current))
+            //        {
+            //            return true;
+            //        }
+            //    }
+            //}
+            //return false;
+        }
+
+        public static bool YourSequenceEqual<T>(IEnumerable<T> sources, IEnumerable<T> sources2, IEqualityComparer<T> myCompare)
+        {
+            var enumerator1 = sources.GetEnumerator();
+            var enumerator2 = sources2.GetEnumerator();
+            bool a, b;
+            while ((a = enumerator1.MoveNext()) & ( b =  enumerator2.MoveNext()))
+            {
+                if (!myCompare.Equals(enumerator1.Current, enumerator2.Current))
+                {
+                    return false;
+                }
+            }
+            return a == b;
         }
     }
 }
